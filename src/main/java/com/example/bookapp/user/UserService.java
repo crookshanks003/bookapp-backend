@@ -28,7 +28,7 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(UserNotFound::new);
     }
 
-    public UserDetails createUser(RegisterUserDto userDto) {
+    public User createUser(RegisterUserDto userDto, Role role) {
         try {
             User existingUser = getUserByEmail(userDto.email);
         } catch (UserNotFound ex) {
@@ -37,17 +37,18 @@ public class UserService {
             user.setName(userDto.name);
             user.setRollNumber(userDto.rollNumber);
             user.setPassword(passwordEncoder.encode(userDto.password));
-            user.setRole(Role.USER);
+            user.setRole(role);
+            user.setWallet(300);
 
             userRepository.save(user);
 
-            return mapUserToUserDetails(user);
+            return user;
 
         }
         throw new UserAlreadyExist();
     }
 
-    private UserDetails mapUserToUserDetails(User user) {
+    public UserDetails mapUserToUserDetails(User user) {
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
 

@@ -1,4 +1,4 @@
-package com.example.bookapp.user.auth;
+package com.example.bookapp;
 
 import com.example.bookapp.user.auth.JwtAuthFilter;
 import com.example.bookapp.user.auth.UserDetailsServiceImpl;

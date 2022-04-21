@@ -7,22 +7,20 @@ import com.example.bookapp.user.dto.RegisterUserDto;
 import com.example.bookapp.user.exception.UserAlreadyExist;
 import com.example.bookapp.user.exception.UserNotFound;
 import com.example.bookapp.user.response.JwtResponse;
-import io.jsonwebtoken.JwtException;
+import com.example.bookapp.user.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping(path = "/user")
@@ -46,11 +44,13 @@ public class UserController {
         return "Hello World";
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/get}")
     public @ResponseBody
-    User getUser(@PathVariable int id) {
+    UserResponse getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
-            return userService.getUserById(id);
+            User user = userService.getUserByEmail((String) authentication.getPrincipal());
+            return new UserResponse(user);
         } catch (UserNotFound ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found", ex);
         }
@@ -60,8 +60,9 @@ public class UserController {
     public @ResponseBody
     JwtResponse registerUser(@Valid @RequestBody RegisterUserDto userDto) {
         try {
-            UserDetails user = userService.createUser(userDto);
-            String jwt = jwtUtils.generateToken(user);
+            User user = userService.createUser(userDto, Role.USER);
+            UserDetails userDetails = userService.mapUserToUserDetails(user);
+            String jwt = jwtUtils.generateToken(userDetails);
             return new JwtResponse(jwt);
         } catch (UserAlreadyExist ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User with given email already exist");
