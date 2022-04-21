@@ -15,8 +15,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping(path = "/user")
@@ -52,7 +58,7 @@ public class UserController {
 
     @PostMapping("/register")
     public @ResponseBody
-    JwtResponse registerUser(@RequestBody RegisterUserDto userDto) {
+    JwtResponse registerUser(@Valid @RequestBody RegisterUserDto userDto) {
         try {
             UserDetails user = userService.createUser(userDto);
             String jwt = jwtUtils.generateToken(user);
@@ -64,7 +70,7 @@ public class UserController {
 
     @PostMapping("/login")
     public @ResponseBody
-    JwtResponse loginUser(@RequestBody LoginUserDto userDto) {
+    JwtResponse loginUser(@Valid @RequestBody LoginUserDto userDto) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.email, userDto.password));
 

@@ -1,5 +1,7 @@
 package com.example.bookapp.user.auth;
 
+import com.example.bookapp.user.auth.JwtAuthFilter;
+import com.example.bookapp.user.auth.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +44,10 @@ public class SecurityAdapter extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeRequests().antMatchers("/user/login", "/user/register").permitAll().
-                anyRequest().authenticated().and().exceptionHandling().and().sessionManagement()
+                anyRequest().authenticated()
+                .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         httpSecurity.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
