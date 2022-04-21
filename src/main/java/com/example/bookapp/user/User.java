@@ -1,6 +1,9 @@
 package com.example.bookapp.user;
 
+import com.example.bookapp.book.Book;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
@@ -21,6 +24,9 @@ public class User {
 
     @Column(columnDefinition = "integer default 0")
     private int wallet;
+
+    @OneToMany
+    private List<Book> books;
 
     public Integer getId() {
         return id;
