@@ -15,8 +15,8 @@ public class JwtUtils {
     private final String jwtSecrete = "wkjeckwjebkejvwkenvkwejkwrjvbejkrvbekrnvlwenvlbjwehbweDJKNKJEBLWJbjwjebjheb";
     private final Key key = new SecretKeySpec(Base64.getDecoder().decode(jwtSecrete), SignatureAlgorithm.HS256.getJcaName());
 
-    public String generateToken(UserDetails userDetails) {
-        return Jwts.builder().setSubject(userDetails.getUsername()).setIssuedAt(Date.from(Instant.now())).signWith(key).compact();
+    public String generateToken(UserDetailsImpl userDetails) {
+        return Jwts.builder().setSubject(userDetails.getUsername()).claim("userId", userDetails.getUserId()).setIssuedAt(Date.from(Instant.now())).signWith(key).compact();
     }
 
     public String getUserEmail(String token) {

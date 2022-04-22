@@ -1,6 +1,7 @@
 package com.example.bookapp.user;
 
 import com.example.bookapp.user.auth.JwtUtils;
+import com.example.bookapp.user.auth.UserDetailsImpl;
 import com.example.bookapp.user.auth.UserDetailsServiceImpl;
 import com.example.bookapp.user.dto.LoginUserDto;
 import com.example.bookapp.user.dto.RegisterUserDto;
@@ -47,7 +48,7 @@ public class UserController {
     @GetMapping("/get-user")
     public @ResponseBody
     UserResponse getCurUser() {
-        org.springframework.security.core.userdetails.User authentication = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetailsImpl authentication = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
             User user = userService.getUserByEmail(authentication.getUsername());
             return new UserResponse(user);
@@ -61,7 +62,7 @@ public class UserController {
     JwtResponse registerUser(@Valid @RequestBody RegisterUserDto userDto) {
         try {
             User user = userService.createUser(userDto, Role.USER);
-            UserDetails userDetails = userService.mapUserToUserDetails(user);
+            UserDetailsImpl userDetails = userService.mapUserToUserDetails(user);
             String jwt = jwtUtils.generateToken(userDetails);
             return new JwtResponse(jwt);
         } catch (UserAlreadyExist ex) {
@@ -79,7 +80,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect username or password", ex);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(userDto.email);
+        final UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(userDto.email);
         final String jwt = jwtUtils.generateToken(userDetails);
 
         return new JwtResponse(jwt);

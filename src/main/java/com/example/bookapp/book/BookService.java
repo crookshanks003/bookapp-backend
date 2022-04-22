@@ -15,7 +15,7 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    Book getBookById(int id) {
+    public Book getBookById(int id) {
         return bookRepository.findById(id).orElseThrow(BookNotFound::new);
     }
 
@@ -27,6 +27,7 @@ public class BookService {
         book.setAuthor(author);
         book.setYear(bookDto.year);
         book.setCategory(category);
+        book.setPrice(15);
         book.setPublishStatus(BookPublishStatus.ADDED);
 
         bookRepository.save(book);
@@ -34,9 +35,6 @@ public class BookService {
     }
 
     public void changePublishStatus(ChangeBookStatusDto bookStatusDto){
-        Book book = bookRepository.getById(bookStatusDto.bookId);
-
-        book.setPublishStatus(bookStatusDto.status);
-        bookRepository.save(book);
+        bookRepository.updateBookStatus(bookStatusDto.status, bookStatusDto.bookId);
     }
 }

@@ -3,28 +3,28 @@ package com.example.bookapp.transaction;
 import com.example.bookapp.book.Book;
 import com.example.bookapp.transaction.dto.ExtensionStatus;
 import com.example.bookapp.transaction.dto.TransactionStatus;
-import com.example.bookapp.user.Role;
 import com.example.bookapp.user.User;
-import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 public class Transaction {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
-    @CreationTimestamp
-    private Date requestedDate;
+    private LocalDate requestedDate;
 
-    private Date lendDate;
+    @Column(nullable = true)
+    private LocalDate lendDate;
 
-    private Date expReturnDate;
+    private LocalDate expReturnDate;
 
-    private Date returnDate;
+    @Column(nullable = true)
+    private LocalDate returnDate;
 
     private int penalty;
 
@@ -48,27 +48,27 @@ public class Transaction {
         this.id = id;
     }
 
-    public Date getLendDate() {
+    public LocalDate getLendDate() {
         return lendDate;
     }
 
-    public void setLendDate(Date lendDate) {
+    public void setLendDate(LocalDate lendDate) {
         this.lendDate = lendDate;
     }
 
-    public Date getExpReturnDate() {
+    public LocalDate getExpReturnDate() {
         return expReturnDate;
     }
 
-    public void setExpReturnDate(Date expReturnDate) {
+    public void setExpReturnDate(LocalDate expReturnDate) {
         this.expReturnDate = expReturnDate;
     }
 
-    public Date getReturnDate() {
+    public LocalDate getReturnDate() {
         return returnDate;
     }
 
-    public void setReturnDate(Date returnDate) {
+    public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
 
@@ -110,5 +110,13 @@ public class Transaction {
 
     public void setExtensionStatus(ExtensionStatus extensionStatus) {
         this.extensionStatus = extensionStatus;
+    }
+
+    public LocalDate getRequestedDate() {
+        return requestedDate;
+    }
+
+    public void setRequestedDate(LocalDate requestedDate) {
+        this.requestedDate = requestedDate;
     }
 }
