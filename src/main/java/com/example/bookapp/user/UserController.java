@@ -44,15 +44,15 @@ public class UserController {
         return "Hello World";
     }
 
-    @GetMapping("/get}")
+    @GetMapping("/get-user")
     public @ResponseBody
-    UserResponse getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserResponse getCurUser() {
+        org.springframework.security.core.userdetails.User authentication = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
-            User user = userService.getUserByEmail((String) authentication.getPrincipal());
+            User user = userService.getUserByEmail(authentication.getUsername());
             return new UserResponse(user);
         } catch (UserNotFound ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found", ex);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", ex);
         }
     }
 

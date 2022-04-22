@@ -4,24 +4,24 @@ import com.example.bookapp.user.Role;
 import com.example.bookapp.user.User;
 
 public class UserResponse {
-    private int id;
+    public int id;
 
-    private String name;
+    public String name;
 
-    private String email;
+    public String email;
 
-    private String rollNumber;
+    public String rollNumber;
 
-    private Role role;
+    public String role;
 
-    private int wallet;
+    public int wallet;
 
     public UserResponse(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.rollNumber = user.getRollNumber();
-        this.role = user.getRole();
+        this.role = "USER";
         this.wallet = user.getWallet();
     }
 }

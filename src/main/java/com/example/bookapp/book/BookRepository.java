@@ -1,11 +1,9 @@
-package com.example.bookapp.user;
+package com.example.bookapp.book;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
-
-    Optional<User> findByEmail(String email);
+public interface BookRepository extends JpaRepository<Book, Integer> {
 }
