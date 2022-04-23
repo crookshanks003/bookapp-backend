@@ -9,12 +9,11 @@ import com.example.bookapp.category.CategoryService;
 import com.example.bookapp.category.dto.ChangeBookStatusDto;
 import com.example.bookapp.user.User;
 import com.example.bookapp.user.UserService;
-import com.example.bookapp.user.auth.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,7 +48,7 @@ public class BookController {
     @PostMapping("/add")
     public @ResponseBody
     Book addBook(@Valid @RequestBody CreateBookDto bookDto) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.getUserByEmail(userDetails.getUsername());
         Category category = categoryService.getCategoryById(bookDto.categoryId);
         Author author = authorService.getAuthorById(bookDto.authorId);

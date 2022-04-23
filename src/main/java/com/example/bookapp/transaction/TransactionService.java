@@ -41,9 +41,9 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public void changeTransactionStatus(ChangeTransactionStatusDto transactionStatusDto, int userId) {
+    public void changeTransactionStatus(ChangeTransactionStatusDto transactionStatusDto, User user) {
         Transaction transaction = getTransactionById(transactionStatusDto.transactionId);
-        if (transaction.getBook().getOwner().getId() == userId) {
+        if (transaction.getBook().getOwner().getId() == user.getId()) {
             transaction.setTransactionStatus(transactionStatusDto.transactionStatus);
             transactionRepository.save(transaction);
         } else {

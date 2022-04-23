@@ -1,11 +1,9 @@
 package com.example.bookapp.user;
 
-import com.example.bookapp.user.auth.UserDetailsImpl;
 import com.example.bookapp.user.dto.RegisterUserDto;
 import com.example.bookapp.user.exception.UserAlreadyExist;
 import com.example.bookapp.user.exception.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,10 +47,10 @@ public class UserService {
         throw new UserAlreadyExist();
     }
 
-    public UserDetailsImpl mapUserToUserDetails(User user) {
+    public UserDetails mapUserToUserDetails(User user) {
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
 
-        return new UserDetailsImpl(user.getEmail(), user.getPassword(), user.getId(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 }
