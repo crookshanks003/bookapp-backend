@@ -1,21 +1,20 @@
 package com.example.bookapp.transaction;
 
 import com.example.bookapp.book.Book;
-import com.example.bookapp.book.BookRepository;
 import com.example.bookapp.transaction.dto.ChangeTransactionStatusDto;
-import com.example.bookapp.transaction.dto.CreateTransactionDto;
+import com.example.bookapp.transaction.dto.ExtensionStatus;
 import com.example.bookapp.transaction.dto.TransactionStatus;
 import com.example.bookapp.transaction.exception.OwnerMismatchException;
+import com.example.bookapp.transaction.exception.ReturnDateAlreadyPassed;
 import com.example.bookapp.transaction.exception.TransactionNotFound;
 import com.example.bookapp.user.User;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class TransactionService {
@@ -34,8 +33,8 @@ public class TransactionService {
         LocalDate currDate = LocalDate.now();
 
         transaction.setRequestedDate(currDate);
-        transaction.setExpReturnDate(currDate.plusDays(14));
 
+        transaction.setExtensionStatus(ExtensionStatus.NONE);
         transaction.setTransactionStatus(TransactionStatus.REQUESTED);
 
         return transactionRepository.save(transaction);
@@ -43,8 +42,19 @@ public class TransactionService {
 
     public void changeTransactionStatus(ChangeTransactionStatusDto transactionStatusDto, User user) {
         Transaction transaction = getTransactionById(transactionStatusDto.transactionId);
-        if (transaction.getBook().getOwner().getId() == user.getId()) {
+        if (Objects.equals(transaction.getBook().getOwner().getId(), user.getId())) {
             transaction.setTransactionStatus(transactionStatusDto.transactionStatus);
+            LocalDate currDate = LocalDate.now();
+            if(transactionStatusDto.transactionStatus == TransactionStatus.BORROWED){
+                transaction.setExpReturnDate(currDate.plusDays(14));
+                transaction.setLendDate(currDate);
+            } else if (transactionStatusDto.transactionStatus == TransactionStatus.RETURNED){
+                transaction.setReturnDate(currDate);
+                if (currDate.isAfter(transaction.getExpReturnDate())){
+                    int lateDay = Period.between(transaction.getExpReturnDate(), currDate).getDays();
+                    transaction.setPenalty(lateDay);
+                }
+            }
             transactionRepository.save(transaction);
         } else {
             throw new OwnerMismatchException();
@@ -53,5 +63,13 @@ public class TransactionService {
 
     public List<Transaction> getTransactionByUser(User user) {
         return transactionRepository.findByUser(user);
+    }
+
+    public void updateExtension(int transactionId){
+        if (LocalDate.now().isBefore(transactionRepository.findExpReturnDateById(transactionId))){
+            transactionRepository.updateExtensionStatus(ExtensionStatus.APPROVED, LocalDate.now().plusDays(7), transactionId);
+        } else {
+            throw new ReturnDateAlreadyPassed();
+        }
     }
 }

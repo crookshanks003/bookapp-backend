@@ -6,6 +6,7 @@ import com.example.bookapp.book.exception.BookNotFound;
 import com.example.bookapp.transaction.dto.ChangeTransactionStatusDto;
 import com.example.bookapp.transaction.dto.CreateTransactionDto;
 import com.example.bookapp.transaction.exception.OwnerMismatchException;
+import com.example.bookapp.transaction.exception.ReturnDateAlreadyPassed;
 import com.example.bookapp.user.User;
 import com.example.bookapp.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,19 @@ public class TransactionController {
             return true;
         } catch (OwnerMismatchException ex){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not not authorized to make this request",ex);
+        }
+    }
+
+    @PostMapping("/update/extension")
+    public @ResponseBody
+    boolean changeExtensionStatus(@RequestBody() int transactionId){
+        try{
+            transactionService.updateExtension(transactionId);
+            return true;
+        } catch (IllegalArgumentException ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction does not exist");
+        } catch (ReturnDateAlreadyPassed ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot get extension as return date has already passed");
         }
     }
 }
