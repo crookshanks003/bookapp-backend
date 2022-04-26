@@ -1,7 +1,6 @@
 package com.example.bookapp.transaction;
 
 import com.example.bookapp.book.Book;
-import com.example.bookapp.book.dto.FeedBook;
 import com.example.bookapp.transaction.dto.ChangeTransactionStatusDto;
 import com.example.bookapp.transaction.dto.ExtensionStatus;
 import com.example.bookapp.transaction.dto.TransactionStatus;
@@ -41,12 +40,12 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public void changeTransactionStatus(ChangeTransactionStatusDto transactionStatusDto, User user) {
-        Transaction transaction = getTransactionById(transactionStatusDto.transactionId);
+    public void changeTransactionStatus(ChangeTransactionStatusDto transactionStatusDto, User user, Transaction transaction) {
         if (Objects.equals(transaction.getBook().getOwner().getId(), user.getId())) {
             transaction.setTransactionStatus(transactionStatusDto.transactionStatus);
             LocalDate currDate = LocalDate.now();
             if (transactionStatusDto.transactionStatus == TransactionStatus.BORROWED) {
+                User borrower = transaction.getUser();
                 transaction.setExpReturnDate(currDate.plusDays(14));
                 transaction.setLendDate(currDate);
             } else if (transactionStatusDto.transactionStatus == TransactionStatus.RETURNED) {
@@ -63,7 +62,11 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionByUser(User user) {
-        return transactionRepository.findByUser(user);
+        return transactionRepository.findByUserAndTransactionStatusNot(user, TransactionStatus.CANCELED);
+    }
+
+    public List<Transaction> getRequestsForUser(User user){
+        return transactionRepository.findByOwner(user);
     }
 
     public void updateExtension(int transactionId) {
@@ -76,5 +79,13 @@ public class TransactionService {
 
     public List<Transaction> getTransactionByBook(Book book) {
         return transactionRepository.findByBook(book);
+    }
+
+    public List<Transaction> getHistoryByUser(User user){
+        return transactionRepository.findByUser(user);
+    }
+
+    public List<Transaction> getHistoryByOwner(User owner){
+        return transactionRepository.findByBookOwner(owner);
     }
 }

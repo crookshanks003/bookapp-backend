@@ -123,7 +123,7 @@ public class UserController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.getUserByEmail(userDetails.getUsername());
         List<Category> categories = user.getCategories();
-        return bookService.getFeed(categories);
+        return bookService.getFeed(categories, user.getId());
     }
 
     @DeleteMapping("/{id}")

@@ -61,7 +61,12 @@ public class BookService {
         return bookRepository.findByNameContaining(queryString);
     }
 
-    public List<FeedBook> getFeed(List<Category> categories) {
-        return bookRepository.findBookForFeed(categories);
+    public List<FeedBook> getFeed(List<Category> categories, int userId) {
+        return bookRepository.findBookForFeed(categories, userId);
+    }
+
+    public void changeCheckedOut(Book book, boolean b) {
+        book.setCheckedOut(b);
+        bookRepository.save(book);
     }
 }

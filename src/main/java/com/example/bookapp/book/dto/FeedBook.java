@@ -7,6 +7,7 @@ import com.example.bookapp.user.User;
 import com.example.bookapp.user.response.UserResponse;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 public class FeedBook {
     private Integer id;
@@ -27,6 +28,16 @@ public class FeedBook {
 
     private Category category;
 
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    private LocalDate createdDate;
+
     public Author getAuthor() {
         return author;
     }
@@ -42,7 +53,6 @@ public class FeedBook {
     public void setCategory(Category category) {
         this.category = category;
     }
-
 
     public Integer getId() {
         return id;
@@ -110,5 +120,6 @@ public class FeedBook {
         this.owner = new UserResponse(book.getOwner());
         this.author = book.getAuthor();
         this.category = book.getCategory();
+        this.createdDate = book.getCreatedDate();
     }
 }

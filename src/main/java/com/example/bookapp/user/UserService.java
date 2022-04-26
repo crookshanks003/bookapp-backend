@@ -66,4 +66,9 @@ public class UserService {
     public void deleteUser(int intId) {
         userRepository.deleteById(intId);
     }
+
+    public void changeWallet(User user) {
+        user.setWallet(user.getWallet() - 15);
+        userRepository.save(user);
+    }
 }

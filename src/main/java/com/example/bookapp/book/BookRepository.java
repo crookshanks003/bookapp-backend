@@ -26,6 +26,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     List<Book> findByNameContaining(String queryString);
 
-    @Query("select new com.example.bookapp.book.dto.FeedBook(b) from Book b where b.category in ?1")
-    List<FeedBook> findBookForFeed(List<Category> category);
+    @Query("select new com.example.bookapp.book.dto.FeedBook(b) from Book b where b.category in ?1 and b.owner.id != ?2 and b.checkedOut = false")
+    List<FeedBook> findBookForFeed(List<Category> category, int userId);
 }

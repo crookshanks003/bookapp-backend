@@ -33,6 +33,16 @@ public class Book {
     @ManyToOne
     private Author author;
 
+    public boolean isCheckedOut() {
+        return checkedOut;
+    }
+
+    public void setCheckedOut(boolean checkedOut) {
+        this.checkedOut = checkedOut;
+    }
+
+    private boolean checkedOut = false;
+
     public LocalDate getCreatedDate() {
         return createdDate;
     }

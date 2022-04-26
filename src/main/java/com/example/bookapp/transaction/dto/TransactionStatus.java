@@ -5,4 +5,5 @@ public enum TransactionStatus {
     BORROWED,
     EXTENDED,
     RETURNED,
+    CANCELED,
 }
