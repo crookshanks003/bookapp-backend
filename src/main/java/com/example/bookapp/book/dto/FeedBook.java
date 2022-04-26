@@ -1,19 +1,14 @@
-package com.example.bookapp.book;
-
+package com.example.bookapp.book.dto;
 
 import com.example.bookapp.author.Author;
-import com.example.bookapp.book.dto.BookPublishStatus;
+import com.example.bookapp.book.Book;
 import com.example.bookapp.category.Category;
-import com.example.bookapp.user.Role;
 import com.example.bookapp.user.User;
+import com.example.bookapp.user.response.UserResponse;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
-@Entity
-public class Book {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+public class FeedBook {
     private Integer id;
 
     private String name;
@@ -24,24 +19,13 @@ public class Book {
 
     private int price;
 
-    @Enumerated(EnumType.ORDINAL)
     private BookPublishStatus publishStatus;
 
-    @ManyToOne
-    private User owner;
+    private UserResponse owner;
 
-    @ManyToOne
     private Author author;
 
-    public LocalDate getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    private LocalDate createdDate;
+    private Category category;
 
     public Author getAuthor() {
         return author;
@@ -59,8 +43,6 @@ public class Book {
         this.category = category;
     }
 
-    @ManyToOne
-    private Category category;
 
     public Integer getId() {
         return id;
@@ -110,11 +92,23 @@ public class Book {
         this.publishStatus = publishStatus;
     }
 
-    public User getOwner() {
+    public UserResponse getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(UserResponse owner) {
         this.owner = owner;
+    }
+
+    public FeedBook(Book book) {
+        this.id = book.getId();
+        this.name = book.getName();
+        this.isbn = book.getIsbn();
+        this.year = book.getYear();
+        this.price = book.getPrice();
+        this.publishStatus = book.getPublishStatus();
+        this.owner = new UserResponse(book.getOwner());
+        this.author = book.getAuthor();
+        this.category = book.getCategory();
     }
 }

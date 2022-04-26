@@ -18,6 +18,12 @@ public class AuthorController {
     @Autowired
     private AuthorService authorService;
 
+    @GetMapping("/{id}")
+    public @ResponseBody
+    Author getAuthor(@PathVariable String id){
+        return authorService.getAuthorById(Integer.parseInt(id));
+    }
+
     @GetMapping("/all")
     public @ResponseBody
     List<Author> getAllAuthors(){

@@ -1,15 +1,20 @@
 package com.example.bookapp.book;
 
 import com.example.bookapp.book.dto.BookPublishStatus;
+import com.example.bookapp.book.dto.FeedBook;
+import com.example.bookapp.category.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
+
+    @Query("select new com.example.bookapp.book.dto.FeedBook(b) from Book b where b.id = ?1")
+    Optional<FeedBook> findFeedBookById(int id);
 
     @Transactional
     @Modifying
@@ -18,4 +23,9 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     @Query("select b.owner.id from Book b where id = ?1")
     int getOwnerId(int id);
+
+    List<Book> findByNameContaining(String queryString);
+
+    @Query("select new com.example.bookapp.book.dto.FeedBook(b) from Book b where b.category in ?1")
+    List<FeedBook> findBookForFeed(List<Category> category);
 }

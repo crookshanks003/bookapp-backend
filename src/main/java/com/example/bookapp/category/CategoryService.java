@@ -35,4 +35,8 @@ public class CategoryService {
        }
        throw new CategoryExists();
     }
+
+    public List<Category> getAllById(List<Integer> ids){
+        return categoryRepository.findAllById(ids);
+    }
 }

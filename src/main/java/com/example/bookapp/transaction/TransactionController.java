@@ -2,6 +2,7 @@ package com.example.bookapp.transaction;
 
 import com.example.bookapp.book.Book;
 import com.example.bookapp.book.BookService;
+import com.example.bookapp.book.dto.FeedBook;
 import com.example.bookapp.book.exception.BookNotFound;
 import com.example.bookapp.transaction.dto.ChangeTransactionStatusDto;
 import com.example.bookapp.transaction.dto.CreateTransactionDto;
@@ -39,6 +40,13 @@ public class TransactionController {
         User user = userService.getUserByEmail(userDetails.getUsername());
 
         return transactionService.getTransactionByUser(user);
+    }
+
+    @GetMapping("/by-book/{id}")
+    public @ResponseBody
+    List<Transaction> getTransactionByBook(@PathVariable String id){
+        Book book = bookService.getBookById(Integer.parseInt(id));
+        return transactionService.getTransactionByBook(book);
     }
 
     @PostMapping("/add")

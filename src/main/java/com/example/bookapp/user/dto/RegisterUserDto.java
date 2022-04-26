@@ -1,10 +1,14 @@
 package com.example.bookapp.user.dto;
 
+import com.example.bookapp.category.Category;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 public class RegisterUserDto {
     @NotBlank(message = "Name is required")

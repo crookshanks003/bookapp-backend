@@ -1,6 +1,7 @@
 package com.example.bookapp.transaction;
 
 import com.example.bookapp.book.Book;
+import com.example.bookapp.book.dto.FeedBook;
 import com.example.bookapp.transaction.dto.ChangeTransactionStatusDto;
 import com.example.bookapp.transaction.dto.ExtensionStatus;
 import com.example.bookapp.transaction.dto.TransactionStatus;
@@ -45,12 +46,12 @@ public class TransactionService {
         if (Objects.equals(transaction.getBook().getOwner().getId(), user.getId())) {
             transaction.setTransactionStatus(transactionStatusDto.transactionStatus);
             LocalDate currDate = LocalDate.now();
-            if(transactionStatusDto.transactionStatus == TransactionStatus.BORROWED){
+            if (transactionStatusDto.transactionStatus == TransactionStatus.BORROWED) {
                 transaction.setExpReturnDate(currDate.plusDays(14));
                 transaction.setLendDate(currDate);
-            } else if (transactionStatusDto.transactionStatus == TransactionStatus.RETURNED){
+            } else if (transactionStatusDto.transactionStatus == TransactionStatus.RETURNED) {
                 transaction.setReturnDate(currDate);
-                if (currDate.isAfter(transaction.getExpReturnDate())){
+                if (currDate.isAfter(transaction.getExpReturnDate())) {
                     int lateDay = Period.between(transaction.getExpReturnDate(), currDate).getDays();
                     transaction.setPenalty(lateDay);
                 }
@@ -65,11 +66,15 @@ public class TransactionService {
         return transactionRepository.findByUser(user);
     }
 
-    public void updateExtension(int transactionId){
-        if (LocalDate.now().isBefore(transactionRepository.findExpReturnDateById(transactionId))){
+    public void updateExtension(int transactionId) {
+        if (LocalDate.now().isBefore(transactionRepository.findExpReturnDateById(transactionId))) {
             transactionRepository.updateExtensionStatus(ExtensionStatus.APPROVED, LocalDate.now().plusDays(7), transactionId);
         } else {
             throw new ReturnDateAlreadyPassed();
         }
+    }
+
+    public List<Transaction> getTransactionByBook(Book book) {
+        return transactionRepository.findByBook(book);
     }
 }

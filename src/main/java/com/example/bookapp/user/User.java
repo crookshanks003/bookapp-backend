@@ -1,6 +1,7 @@
 package com.example.bookapp.user;
 
 import com.example.bookapp.book.Book;
+import com.example.bookapp.category.Category;
 
 import javax.persistence.*;
 import java.util.List;
@@ -27,6 +28,9 @@ public class User {
 
     @OneToMany
     private List<Book> books;
+
+    @ManyToMany
+    private  List<Category> categories;
 
     public Integer getId() {
         return id;
@@ -82,5 +86,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

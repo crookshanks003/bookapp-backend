@@ -1,10 +1,10 @@
 package com.example.bookapp.transaction;
 
-import com.example.bookapp.book.dto.BookPublishStatus;
+import com.example.bookapp.book.Book;
+import com.example.bookapp.book.dto.FeedBook;
 import com.example.bookapp.transaction.dto.ExtensionStatus;
 import com.example.bookapp.transaction.dto.TransactionStatus;
 import com.example.bookapp.user.User;
-import jdk.jshell.execution.LoaderDelegate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +28,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     @Query("select expReturnDate from Transaction where id=?1")
     LocalDate findExpReturnDateById(int id);
+
+    List<Transaction> findByBook(Book book);
 }

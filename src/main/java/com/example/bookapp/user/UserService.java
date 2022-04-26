@@ -1,5 +1,7 @@
 package com.example.bookapp.user;
 
+import com.example.bookapp.book.Book;
+import com.example.bookapp.category.Category;
 import com.example.bookapp.user.dto.RegisterUserDto;
 import com.example.bookapp.user.exception.UserAlreadyExist;
 import com.example.bookapp.user.exception.UserNotFound;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UserService {
@@ -47,10 +50,20 @@ public class UserService {
         throw new UserAlreadyExist();
     }
 
+    public User changeCategories(List<Category> categories, User user){
+        user.setCategories(categories);
+        userRepository.save(user);
+        return user;
+    }
+
     public UserDetails mapUserToUserDetails(User user) {
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    }
+
+    public void deleteUser(int intId) {
+        userRepository.deleteById(intId);
     }
 }
