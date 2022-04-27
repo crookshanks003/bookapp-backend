@@ -21,7 +21,7 @@ public class UserResponse {
         this.name = user.getName();
         this.email = user.getEmail();
         this.rollNumber = user.getRollNumber();
-        this.role = "USER";
+        this.role = user.getRole().toString();
         this.wallet = user.getWallet();
     }
 }

@@ -40,6 +40,7 @@ public class UserService {
             user.setRollNumber(userDto.rollNumber);
             user.setPassword(passwordEncoder.encode(userDto.password));
             user.setRole(role);
+            user.setActive(true);
             user.setWallet(300);
 
             userRepository.save(user);
@@ -64,7 +65,12 @@ public class UserService {
     }
 
     public void deleteUser(int intId) {
-        userRepository.deleteById(intId);
+        User user = getUserById(intId);
+        user.setActive(false);
+        userRepository.save(user);
+    }
+    public List<User> searchUser(String query){
+        return userRepository.findByNameContainingAndActive(query, true);
     }
 
     public void changeWallet(User user) {

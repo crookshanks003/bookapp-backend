@@ -41,11 +41,10 @@ public class TransactionService {
     }
 
     public void changeTransactionStatus(ChangeTransactionStatusDto transactionStatusDto, User user, Transaction transaction) {
-        if (Objects.equals(transaction.getBook().getOwner().getId(), user.getId())) {
+        if (Objects.equals(transaction.getBook().getOwner().getId(), user.getId()) || transactionStatusDto.transactionStatus == TransactionStatus.CANCELED) {
             transaction.setTransactionStatus(transactionStatusDto.transactionStatus);
             LocalDate currDate = LocalDate.now();
             if (transactionStatusDto.transactionStatus == TransactionStatus.BORROWED) {
-                User borrower = transaction.getUser();
                 transaction.setExpReturnDate(currDate.plusDays(14));
                 transaction.setLendDate(currDate);
             } else if (transactionStatusDto.transactionStatus == TransactionStatus.RETURNED) {

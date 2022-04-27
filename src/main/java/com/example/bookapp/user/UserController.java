@@ -72,6 +72,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/book")
+    public @ResponseBody
+    List<Book> getUserBook(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        return bookService.getUserBook(user);
+    }
+
+
     @PostMapping("/register")
     public @ResponseBody
     JwtResponse registerUser(@Valid @RequestBody RegisterUserDto userDto) {
@@ -95,7 +104,11 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect username or password", ex);
         }
 
-        final UserDetails userDetails = userService.mapUserToUserDetails(userService.getUserByEmail(userDto.email));
+        User user = userService.getUserByEmail(userDto.email);
+        if (!user.isActive()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Your account is suspended. Try contacting admin");
+        }
+        final UserDetails userDetails = userService.mapUserToUserDetails(user);
         final String jwt = jwtUtils.generateToken(userDetails);
 
         return new JwtResponse(jwt);
@@ -137,5 +150,11 @@ public class UserController {
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to make this request");
         }
+    }
+
+    @GetMapping("/search")
+    public @ResponseBody
+    List<User> searchUser(@RequestParam("query") String query){
+        return userService.searchUser(query);
     }
 }

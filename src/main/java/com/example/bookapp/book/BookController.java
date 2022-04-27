@@ -89,6 +89,8 @@ public class BookController {
     @GetMapping("/search")
     public @ResponseBody
     List<Book> searchBook(@RequestParam("query") String query){
-        return bookService.searchBook(query);
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        return bookService.searchBook(query ,user);
     }
 }

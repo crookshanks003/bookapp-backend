@@ -56,9 +56,8 @@ public class BookService {
         }
     }
 
-    public List<Book> searchBook(String query) {
-        String queryString = "%"+query+"%";
-        return bookRepository.findByNameContaining(queryString);
+    public List<Book> searchBook(String query, User owner) {
+        return bookRepository.findByNameContainingAndOwnerNot(query, owner);
     }
 
     public List<FeedBook> getFeed(List<Category> categories, int userId) {
@@ -68,5 +67,9 @@ public class BookService {
     public void changeCheckedOut(Book book, boolean b) {
         book.setCheckedOut(b);
         bookRepository.save(book);
+    }
+
+    public List<Book> getUserBook(User user) {
+        return bookRepository.findByOwner(user);
     }
 }

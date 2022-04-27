@@ -60,6 +60,9 @@ public class TransactionController {
             if(book.isCheckedOut()){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Book already checked out");
             }
+            if(user.getWallet() < 15){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
+            }
             bookService.changeCheckedOut(book, true);
             return transactionService.createTransaction(book, user);
         } catch (BookNotFound ex) {
