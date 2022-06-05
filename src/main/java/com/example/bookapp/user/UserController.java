@@ -105,7 +105,7 @@ public class UserController {
         }
 
         User user = userService.getUserByEmail(userDto.email);
-        if (!user.isActive()){
+        if (user.isActive() == 0){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Your account is suspended. Try contacting admin");
         }
         final UserDetails userDetails = userService.mapUserToUserDetails(user);

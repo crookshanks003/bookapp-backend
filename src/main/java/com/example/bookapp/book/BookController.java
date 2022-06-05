@@ -4,6 +4,7 @@ import com.example.bookapp.author.Author;
 import com.example.bookapp.author.AuthorService;
 import com.example.bookapp.book.dto.CreateBookDto;
 import com.example.bookapp.book.dto.FeedBook;
+import com.example.bookapp.book.exception.BookCheckedOut;
 import com.example.bookapp.book.exception.BookNotFound;
 import com.example.bookapp.category.Category;
 import com.example.bookapp.category.CategoryService;
@@ -83,6 +84,8 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to make this request");
         }catch (BookNotFound ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with given id not found");
+        } catch (BookCheckedOut ex){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to delete. Book already checked out");
         }
     }
 

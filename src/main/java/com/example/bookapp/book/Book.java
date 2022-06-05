@@ -33,6 +33,10 @@ public class Book {
     @ManyToOne
     private Author author;
 
+    private boolean checkedOut = false;
+
+    private LocalDate createdDate;
+
     public boolean isCheckedOut() {
         return checkedOut;
     }
@@ -40,8 +44,6 @@ public class Book {
     public void setCheckedOut(boolean checkedOut) {
         this.checkedOut = checkedOut;
     }
-
-    private boolean checkedOut = false;
 
     public LocalDate getCreatedDate() {
         return createdDate;
@@ -51,7 +53,6 @@ public class Book {
         this.createdDate = createdDate;
     }
 
-    private LocalDate createdDate;
 
     public Author getAuthor() {
         return author;

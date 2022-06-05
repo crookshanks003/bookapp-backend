@@ -20,15 +20,15 @@ public class User {
 
     private String rollNumber;
 
-    public boolean isActive() {
+    public int isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(int active) {
         this.active = active;
     }
 
-    private boolean active;
+    private int active;
 
     @Enumerated(EnumType.ORDINAL)
     private Role role;

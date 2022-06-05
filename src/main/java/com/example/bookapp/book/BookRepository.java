@@ -27,7 +27,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     List<Book> findByNameContainingAndOwnerNot(String queryString, User owner);
 
-    @Query("select b from Book b where b.name like %?1% and b.owner != ?2 and b.owner.active=true")
+    @Query("select b from Book b where b.name like %?1% and b.owner != ?2 and b.owner.active=1")
     List<Book> searchBook(String query, User user);
 
     @Query("select new com.example.bookapp.book.dto.FeedBook(b) from Book b where b.category in ?1 and b.owner.id != ?2 and b.checkedOut = false")

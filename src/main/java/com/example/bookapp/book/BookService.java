@@ -4,6 +4,7 @@ import com.example.bookapp.author.Author;
 import com.example.bookapp.book.dto.BookPublishStatus;
 import com.example.bookapp.book.dto.CreateBookDto;
 import com.example.bookapp.book.dto.FeedBook;
+import com.example.bookapp.book.exception.BookCheckedOut;
 import com.example.bookapp.book.exception.BookNotFound;
 import com.example.bookapp.category.Category;
 import com.example.bookapp.category.dto.ChangeBookStatusDto;
@@ -49,6 +50,9 @@ public class BookService {
 
     public void deleteBook(int bookId, User user) {
         Book book = bookRepository.findById(bookId).orElseThrow(BookNotFound::new);
+        if (book.isCheckedOut()){
+            throw new BookCheckedOut();
+        }
         if (book.getOwner() == user) {
             bookRepository.deleteById(bookId);
         } else {
